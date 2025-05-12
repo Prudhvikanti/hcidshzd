@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - kisan365mart</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <main>
+        <h1>Login</h1>
+        <form id="loginForm">
+            <label for="email">Email:</label><br />
+            <input type="email" id="email" name="email" required /><br /><br />
+            <label for="password">Password:</label><br />
+            <input type="password" id="password" name="password" required /><br /><br />
+            <button type="submit">Login</button>
+        </form>
+        <p id="message"></p>
+    </main>
+    <script src="login.js"></script>
+</body>
+</html>

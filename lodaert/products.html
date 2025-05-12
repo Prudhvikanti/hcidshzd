@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Products - kisan365mart</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">kisan365mart</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html" class="active">Products</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Cart</a></li>
+                
+                <li id="adminNavItem" style="display:none;"><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="filters">
+            <input type="text" id="searchInput" placeholder="Search products..." />
+            <div class="categories">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="water">water</button>
+                <button class="category-btn" data-category="Pickles">Pickles</button>
+                <button class="category-btn" data-category="powders">Powders</button>
+                <button class="category-btn" data-category="Sweet">Sweet</button>
+                <button class="category-btn" data-category="soft">soft</button>
+            </div>
+            <div class="price-filter">
+                <label for="priceRange">Max Price: <span id="priceValue">10000</span></label>
+                <input type="range" id="priceRange" min="0" max="10000" value="10000" />
+            </div>
+        </section>
+
+<section id="productList" class="product-list">
+    <!-- Products will be dynamically inserted here -->
+</section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://your-supabase-project-url.supabase.co'; // Replace with your Supabase project URL
+        const supabaseKey = 'your-anon-public-key'; // Replace with your Supabase anon public key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function checkAdmin() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const adminEmail = 'admin@example.com'; // Replace with actual admin email
+            const adminNavItem = document.getElementById('adminNavItem');
+            if (user && user.email === adminEmail) {
+                adminNavItem.style.display = 'block';
+            } else {
+                adminNavItem.style.display = 'none';
+            }
+        }
+
+        checkAdmin();
+    </script>
+</body>
+</html>

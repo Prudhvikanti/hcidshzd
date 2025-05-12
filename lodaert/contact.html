@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact Us - kisan365mart</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header>
+    <div class="logo">kisan365mart</div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="#">Blog</a></li>
+            <li id="adminNavItem" style="display:none;"><a href="admin.html">Admin</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h1>Contact Us</h1>
+    <p>We would love to hear from you! Please fill out the form below to get in touch.</p>
+
+    <form class="contact-form" action="#" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</main>
+
+<script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://your-supabase-project-url.supabase.co'; // Replace with your Supabase project URL
+    const supabaseKey = 'your-anon-public-key'; // Replace with your Supabase anon public key
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function checkAdmin() {
+        const { data: { user } } = await supabase.auth.getUser();
+        const adminEmail = 'admin@example.com'; // Replace with actual admin email
+        const adminNavItem = document.getElementById('adminNavItem');
+        if (user && user.email === adminEmail) {
+            adminNavItem.style.display = 'block';
+        } else {
+            adminNavItem.style.display = 'none';
+        }
+    }
+
+    checkAdmin();
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product Details - kisan365mart</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">kisan365mart</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Cart</a></li>
+                
+                <li id="adminNavItem" style="display:none;"><a href="admin.html">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="product-detail">
+            <button onclick="goBack()" class="back-btn">← Back to Products</button>
+            <h1 id="productName">Product Name</h1>
+            <img id="productImage" src="" alt="Product Image" />
+            <p id="productPrice">Price: rs0.00</p>
+            <p id="productDescription">Product description goes here.</p>
+            <button id="addToCartBtn" class="add-cart-btn">
+                <span class="cart-icon" aria-hidden="true">🛒</span> Add to Cart
+            </button>
+        </div>
+    </main>
+
+    <script>
+        function goBack() {
+            window.location.href = 'products.html';
+        }
+
+        // Load product details from URL parameters
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if productsData exists in localStorage, if not generate and save it
+            let productsData = JSON.parse(localStorage.getItem('productsData'));
+            if (!productsData || productsData.length === 0) {
+                // Generate productsData
+                const categories = ['fruits', 'vegetables', 'grains', 'dairy', 'beverages'];
+                const sampleDescriptions = {
+                    pickles: 'Fresh and delicious .',
+                    vegetables: 'Healthy and organic vegetables.',
+                    powder: 'High-quality grains for your meals.',
+                    dairy: 'Fresh dairy products.',
+                    water: 'Refreshing beverages to quench your thirst.'
+                };
+
+                function getRandomPrice(min, max) {
+                    return (Math.random() * (max - min) + min);
+                }
+
+                function getRandomCategory() {
+                    return categories[Math.floor(Math.random() * categories.length)];
+                }
+
+                productsData = [];
+                for (let i = 1; i <= 300; i++) {
+                    const category = getRandomCategory();
+                    const product = {
+                        id: 'prod' + i,
+                        name: `${category.charAt(0).toUpperCase() + category.slice(1)} Product ${i}`,
+                        category: category,
+                        price: parseFloat(getRandomPrice(10, 1000).toFixed(2)),
+                        image: `https://via.placeholder.com/150?text=Product+${i}`,
+                        description: sampleDescriptions[category]
+                    };
+                    productsData.push(product);
+                }
+                localStorage.setItem('productsData', JSON.stringify(productsData));
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (!id) {
+                alert('No product specified.');
+                window.location.href = 'products.html';
+                return;
+            }
+
+            // Fetch product data from localStorage or a global variable
+            const product = productsData.find(p => p.id === id);
+            if (!product) {
+                alert('Product not found.');
+                window.location.href = 'products.html';
+                return;
+            }
+
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productImage').src = product.image;
+            document.getElementById('productImage').alt = product.name;
+            document.getElementById('productPrice').textContent = 'Price: $' + product.price.toFixed(2);
+            document.getElementById('productDescription').textContent = product.description;
+
+            // Add to Cart button event
+            const addToCartBtn = document.getElementById('addToCartBtn');
+            addToCartBtn.addEventListener('click', () => {
+                addToCart(product.id);
+            });
+        });
+
+        // Reuse addToCart function from script.js
+        function addToCart(productId) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const products = JSON.parse(localStorage.getItem('productsData')) || [];
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${product.name} added to cart.`);
+            window.location.href = 'cart.html';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://your-supabase-project-url.supabase.co'; // Replace with your Supabase project URL
+        const supabaseKey = 'your-anon-public-key'; // Replace with your Supabase anon public key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function checkAdmin() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const adminEmail = 'admin@example.com'; // Replace with actual admin email
+            const adminNavItem = document.getElementById('adminNavItem');
+            if (user && user.email === adminEmail) {
+                adminNavItem.style.display = 'block';
+            } else {
+                adminNavItem.style.display = 'none';
+            }
+        }
+
+        checkAdmin();
+    </script>
+</body>
+</html>
